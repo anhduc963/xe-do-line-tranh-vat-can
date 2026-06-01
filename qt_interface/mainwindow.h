@@ -33,8 +33,7 @@ private slots:
 
     // # Cac slot cho nut chon che do
     void on_btnManualMode_clicked();
-    void on_btnLineMode_clicked();
-    void on_btnObstacleMode_clicked();
+    void on_btnAutoMode_clicked();
 
     // # Xu ly trang thai ket noi
     void socketConnected();
