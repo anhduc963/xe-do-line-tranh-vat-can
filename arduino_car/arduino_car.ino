@@ -21,12 +21,12 @@
 #define SENSOR_RI A2 // Right Inner
 #define SENSOR_RO A3 // Right Outer
 
-// # Dinh nghia chan cho Encoder (neu dung)
+// # Dinh nghia chan cho Encoder
 #define ENCODER_L 2
 #define ENCODER_R 3
 
 // # Bien trang thai
-char current_mode = 'M'; // M: Manual, A: Auto Line, O: Obstacle Avoidance
+char current_mode = 'M'; // M: Manual, A: Auto (Line + Obstacle)
 int speed = 150;
 Servo myServo;
 
@@ -38,59 +38,36 @@ void countPulseL() { pulse_count_l++; }
 void countPulseR() { pulse_count_r++; }
 
 void setup() {
-  // # Thiet lap cac chan dau ra cho dong co
-  pinMode(ENA, OUTPUT);
-  pinMode(IN1, OUTPUT);
-  pinMode(IN2, OUTPUT);
-  pinMode(IN3, OUTPUT);
-  pinMode(IN4, OUTPUT);
-  pinMode(ENB, OUTPUT);
+  pinMode(ENA, OUTPUT); pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT); pinMode(ENB, OUTPUT);
+  pinMode(TRIG, OUTPUT); pinMode(ECHO, INPUT);
+  pinMode(SENSOR_LO, INPUT); pinMode(SENSOR_LI, INPUT);
+  pinMode(SENSOR_RI, INPUT); pinMode(SENSOR_RO, INPUT);
+  pinMode(ENCODER_L, INPUT_PULLUP); pinMode(ENCODER_R, INPUT_PULLUP);
 
-  // # Thiet lap cac chan cho sieu am
-  pinMode(TRIG, OUTPUT);
-  pinMode(ECHO, INPUT);
-
-  // # Thiet lap cac chan cho do line
-  pinMode(SENSOR_LO, INPUT);
-  pinMode(SENSOR_LI, INPUT);
-  pinMode(SENSOR_RI, INPUT);
-  pinMode(SENSOR_RO, INPUT);
-
-  // # Thiet lap encoder
-  pinMode(ENCODER_L, INPUT_PULLUP);
-  pinMode(ENCODER_R, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(ENCODER_L), countPulseL, FALLING);
   attachInterrupt(digitalPinToInterrupt(ENCODER_R), countPulseR, FALLING);
 
-  // # Thiet lap servo
   myServo.attach(SERVO_PIN);
-  myServo.write(90); // Huong thang ve phia truoc
+  myServo.write(90);
 
-  // # Thiet lap giao tiep Serial de nhan lenh tu ESP32
   Serial.begin(9600);
-
-  // # Dung xe luc moi bat dau
   stopCar();
 }
 
 void loop() {
-  // # Kiem tra lenh tu Serial (ESP32)
   if (Serial.available() > 0) {
     char cmd = Serial.read();
     handleCommand(cmd);
   }
 
-  // # Thuc hien hanh dong theo che do hien tai
   if (current_mode == 'A') {
-    lineFollowing();
-  } else if (current_mode == 'O') {
-    obstacleAvoidance();
+    autoDrive();
   }
 }
 
 void handleCommand(char cmd) {
-  // # Chuyen doi che do hoac dieu khien huong
-  if (cmd == 'M' || cmd == 'A' || cmd == 'O') {
+  if (cmd == 'M' || cmd == 'A') {
     current_mode = cmd;
     stopCar();
   } else if (current_mode == 'M') {
@@ -102,7 +79,56 @@ void handleCommand(char cmd) {
   }
 }
 
-// # Ham dieu khien dong co
+// # Ham tu dong: Ket hop do line va tranh vat can
+void autoDrive() {
+  long distance = checkDistance();
+
+  // # Neu co vat can gan (duoi 25cm)
+  if (distance > 0 && distance < 25) {
+    stopCar();
+    delay(200);
+    moveBackward();
+    delay(300);
+    turnRight();
+    delay(400);
+  } else {
+    // # Neu khong co vat can thi do line
+    lineFollowing();
+  }
+}
+
+long checkDistance() {
+  digitalWrite(TRIG, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TRIG, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG, LOW);
+  long duration = pulseIn(ECHO, HIGH, 30000); // Timeout 30ms
+  if (duration == 0) return 0;
+  return duration * 0.034 / 2;
+}
+
+void lineFollowing() {
+  int lo = digitalRead(SENSOR_LO);
+  int li = digitalRead(SENSOR_LI);
+  int ri = digitalRead(SENSOR_RI);
+  int ro = digitalRead(SENSOR_RO);
+
+  if (li == HIGH && ri == HIGH) {
+    moveForward();
+  } else if (li == LOW && ri == HIGH) {
+    turnRight();
+  } else if (li == HIGH && ri == LOW) {
+    turnLeft();
+  } else if (lo == HIGH) {
+    turnLeft();
+  } else if (ro == HIGH) {
+    turnRight();
+  } else {
+    analogWrite(ENA, 100); analogWrite(ENB, 100);
+  }
+}
+
 void moveForward() {
   digitalWrite(IN1, HIGH); digitalWrite(IN2, LOW);
   digitalWrite(IN3, HIGH); digitalWrite(IN4, LOW);
@@ -131,51 +157,4 @@ void stopCar() {
   digitalWrite(IN1, LOW); digitalWrite(IN2, LOW);
   digitalWrite(IN3, LOW); digitalWrite(IN4, LOW);
   analogWrite(ENA, 0); analogWrite(ENB, 0);
-}
-
-// # Ham do line
-void lineFollowing() {
-  int lo = digitalRead(SENSOR_LO);
-  int li = digitalRead(SENSOR_LI);
-  int ri = digitalRead(SENSOR_RI);
-  int ro = digitalRead(SENSOR_RO);
-
-  // # Logic do line co ban (gia su 1 la gap vach den, 0 la nen trang)
-  if (li == HIGH && ri == HIGH) {
-    moveForward();
-  } else if (li == LOW && ri == HIGH) {
-    turnRight();
-  } else if (li == HIGH && ri == LOW) {
-    turnLeft();
-  } else if (lo == HIGH) {
-    turnLeft();
-  } else if (ro == HIGH) {
-    turnRight();
-  } else {
-    // # Di cham neu mat line
-    analogWrite(ENA, 100); analogWrite(ENB, 100);
-  }
-}
-
-// # Ham tranh vat can
-void obstacleAvoidance() {
-  long duration, distance;
-  digitalWrite(TRIG, LOW);
-  delayMicroseconds(2);
-  digitalWrite(TRIG, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(TRIG, LOW);
-  duration = pulseIn(ECHO, HIGH);
-  distance = duration * 0.034 / 2;
-
-  if (distance > 25 || distance == 0) {
-    moveForward();
-  } else {
-    stopCar();
-    delay(500);
-    moveBackward();
-    delay(300);
-    turnRight();
-    delay(500);
-  }
 }
