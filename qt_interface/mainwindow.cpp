@@ -102,6 +102,7 @@ void MainWindow::socketError(QBluetoothSocket::SocketError error)
 
 void MainWindow::sendCommand(char cmd)
 {
+    // # Ky tu dieu khien: F: Tien, B: Lui, L: Trai, R: Phai, S: Dung, M: Thu cong, A: Tu dong
     if (socket->isOpen()) {
         QByteArray data;
         data.append(cmd);

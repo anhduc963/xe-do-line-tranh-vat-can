@@ -21,52 +21,52 @@
 #define SENSOR_RI A2 // Right Inner
 #define SENSOR_RO A3 // Right Outer
 
-// # Dinh nghia chan cho Encoder
-#define ENCODER_L 2
-#define ENCODER_R 3
-
 // # Bien trang thai
-char current_mode = 'M'; // M: Manual, A: Auto (Line + Obstacle)
+// # M: Manual (Thu cong), A: Auto (Tu dong - Do line + Vat can)
+char current_mode = 'M';
 int speed = 150;
 Servo myServo;
 
-volatile long pulse_count_l = 0;
-volatile long pulse_count_r = 0;
-
-// # Ham ngat cho encoder
-void countPulseL() { pulse_count_l++; }
-void countPulseR() { pulse_count_r++; }
-
 void setup() {
+  // # Thiet lap cac chan dau ra cho dong co
   pinMode(ENA, OUTPUT); pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT);
   pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT); pinMode(ENB, OUTPUT);
+
+  // # Thiet lap cac chan cho sieu am
   pinMode(TRIG, OUTPUT); pinMode(ECHO, INPUT);
+
+  // # Thiet lap cac chan cho do line
   pinMode(SENSOR_LO, INPUT); pinMode(SENSOR_LI, INPUT);
   pinMode(SENSOR_RI, INPUT); pinMode(SENSOR_RO, INPUT);
-  pinMode(ENCODER_L, INPUT_PULLUP); pinMode(ENCODER_R, INPUT_PULLUP);
 
-  attachInterrupt(digitalPinToInterrupt(ENCODER_L), countPulseL, FALLING);
-  attachInterrupt(digitalPinToInterrupt(ENCODER_R), countPulseR, FALLING);
-
+  // # Thiet lap servo
   myServo.attach(SERVO_PIN);
-  myServo.write(90);
+  myServo.write(90); // Huong thang ve phia truoc
 
+  // # Thiet lap giao tiep Serial de nhan lenh tu ESP32
   Serial.begin(9600);
+
+  // # Dung xe luc moi bat dau
   stopCar();
 }
 
 void loop() {
+  // # Kiem tra lenh tu Serial (ESP32)
   if (Serial.available() > 0) {
     char cmd = Serial.read();
     handleCommand(cmd);
   }
 
+  // # Thuc hien hanh dong theo che do hien tai
   if (current_mode == 'A') {
     autoDrive();
   }
 }
 
 void handleCommand(char cmd) {
+  // # Chuyen doi che do hoac dieu khien huong
+  // # F: Forward (Tien), B: Backward (Lui), L: Left (Trai), R: Right (Phai), S: Stop (Dung)
+  // # M: Manual Mode (Che do thu cong), A: Auto Mode (Che do tu dong)
   if (cmd == 'M' || cmd == 'A') {
     current_mode = cmd;
     stopCar();
@@ -97,6 +97,7 @@ void autoDrive() {
   }
 }
 
+// # Ham do khoang cach bang cam bien sieu am
 long checkDistance() {
   digitalWrite(TRIG, LOW);
   delayMicroseconds(2);
@@ -108,12 +109,14 @@ long checkDistance() {
   return duration * 0.034 / 2;
 }
 
+// # Ham do line
 void lineFollowing() {
   int lo = digitalRead(SENSOR_LO);
   int li = digitalRead(SENSOR_LI);
   int ri = digitalRead(SENSOR_RI);
   int ro = digitalRead(SENSOR_RO);
 
+  // # Logic do line co ban (1 la gap vach den, 0 la nen trang)
   if (li == HIGH && ri == HIGH) {
     moveForward();
   } else if (li == LOW && ri == HIGH) {
@@ -125,10 +128,12 @@ void lineFollowing() {
   } else if (ro == HIGH) {
     turnRight();
   } else {
+    // # Di cham neu mat line
     analogWrite(ENA, 100); analogWrite(ENB, 100);
   }
 }
 
+// # Ham dieu khien dong co
 void moveForward() {
   digitalWrite(IN1, HIGH); digitalWrite(IN2, LOW);
   digitalWrite(IN3, HIGH); digitalWrite(IN4, LOW);

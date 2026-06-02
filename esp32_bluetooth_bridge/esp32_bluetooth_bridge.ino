@@ -21,6 +21,10 @@ void setup() {
 }
 
 void loop() {
+  // # Cac ky tu dieu khien (Control Characters):
+  // # F: Tien, B: Lui, L: Trai, R: Phai, S: Dung
+  // # M: Che do thu cong, A: Che do tu dong (Do line + Vat can)
+
   // # Doc du lieu tu Bluetooth va gui sang Arduino qua Serial2
   if (SerialBT.available()) {
     char incomingChar = SerialBT.read();
