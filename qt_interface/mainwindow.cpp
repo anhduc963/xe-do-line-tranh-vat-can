@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    // # Thiet lap phong cach giao dien (Stylesheets)
+    // Thiet lap phong cach giao dien (Stylesheets)
     this->setStyleSheet(
         "QMainWindow { background-color: #f0f0f0; }"
         "QPushButton { "
@@ -49,8 +49,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(socket, &QBluetoothSocket::connected, this, &MainWindow::socketConnected);
     connect(socket, &QBluetoothSocket::disconnected, this, &MainWindow::socketDisconnected);
-    connect(socket, QOverload<QBluetoothSocket::SocketError>::of(&QBluetoothSocket::error),
-            this, &MainWindow::socketError);
+    // Tuong thich Qt 6: Su dung errorOccurred thay vi error
+    connect(socket, &QBluetoothSocket::errorOccurred, this, &MainWindow::socketError);
 }
 
 MainWindow::~MainWindow()
@@ -102,7 +102,7 @@ void MainWindow::socketError(QBluetoothSocket::SocketError error)
 
 void MainWindow::sendCommand(char cmd)
 {
-    // # Ky tu dieu khien: F: Tien, B: Lui, L: Trai, R: Phai, S: Dung, M: Thu cong, A: Tu dong
+    // Ky tu dieu khien: F: Tien, B: Lui, L: Trai, R: Phai, S: Dung, M: Thu cong, A: Tu dong
     if (socket->isOpen()) {
         QByteArray data;
         data.append(cmd);
