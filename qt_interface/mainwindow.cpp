@@ -49,7 +49,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(socket, &QBluetoothSocket::connected, this, &MainWindow::socketConnected);
     connect(socket, &QBluetoothSocket::disconnected, this, &MainWindow::socketDisconnected);
-    // Tuong thich Qt 6: Su dung errorOccurred thay vi error
     connect(socket, &QBluetoothSocket::errorOccurred, this, &MainWindow::socketError);
 }
 
