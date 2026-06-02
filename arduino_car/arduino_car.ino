@@ -22,7 +22,8 @@
 #define SENSOR_RO A3 // Right Outer
 
 // # Bien trang thai
-char current_mode = 'M'; // M: Manual, A: Auto (Line + Obstacle)
+// # M: Manual (Thu cong), A: Auto (Tu dong - Do line + Vat can)
+char current_mode = 'M';
 int speed = 150;
 Servo myServo;
 
@@ -64,6 +65,8 @@ void loop() {
 
 void handleCommand(char cmd) {
   // # Chuyen doi che do hoac dieu khien huong
+  // # F: Forward (Tien), B: Backward (Lui), L: Left (Trai), R: Right (Phai), S: Stop (Dung)
+  // # M: Manual Mode (Che do thu cong), A: Auto Mode (Che do tu dong)
   if (cmd == 'M' || cmd == 'A') {
     current_mode = cmd;
     stopCar();
