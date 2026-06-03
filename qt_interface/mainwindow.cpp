@@ -49,7 +49,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(socket, &QBluetoothSocket::connected, this, &MainWindow::socketConnected);
     connect(socket, &QBluetoothSocket::disconnected, this, &MainWindow::socketDisconnected);
-    connect(socket, &QBluetoothSocket::errorOccurred, this, &MainWindow::socketError);
+    connect(socket, QOverload<QBluetoothSocket::SocketError>::of(&QBluetoothSocket::errorOccurred),
+            this, &MainWindow::socketError);
 }
 
 MainWindow::~MainWindow()
@@ -75,7 +76,7 @@ void MainWindow::on_btnConnect_clicked()
     QString selected = ui->listDevices->currentItem()->text();
     QString address = selected.split(" ").at(0);
 
-    socket->connectToService(QBluetoothAddress(address), QBluetoothUuid(QBluetoothUuid::Rfcomm));
+    socket->connectToService(QBluetoothAddress(address), QBluetoothUuid(QBluetoothUuid::ProtocolUuid::Rfcomm));
     ui->statusBar->showMessage("Đang kết nối tới " + address + "...");
 }
 
@@ -96,7 +97,7 @@ void MainWindow::socketDisconnected()
 
 void MainWindow::socketError(QBluetoothSocket::SocketError error)
 {
-    ui->statusBar->showMessage("Lỗi Bluetooth: " + QString::number(error));
+    ui->statusBar->showMessage("Lỗi Bluetooth: " + socket->errorString());
 }
 
 void MainWindow::sendCommand(char cmd)
