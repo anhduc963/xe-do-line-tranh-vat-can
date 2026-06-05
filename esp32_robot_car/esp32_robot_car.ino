@@ -10,6 +10,7 @@
 #define ENB 14
 
 // Dinh nghia cac chan cho cam bien sieu am HC-SR04
+// Dinh nghia cac chan cho cam bien sieu am HC-SR04
 #define TRIG 12
 #define ECHO 13
 
@@ -24,6 +25,8 @@
 
 // Bien trang thai
 // M: Manual (Thu cong), A: Auto (Tu dong - Do line + Vat can)
+// Bien trang thai
+// M: Manual (Thu cong), A: Auto (Tu dong - Do line + Vat can)
 char current_mode = 'M';
 int speed = 200; // ESP32 PWM co do phan giai khac, mac dinh thuong la 0-255
 Servo myServo;
@@ -31,12 +34,15 @@ BluetoothSerial SerialBT;
 
 void setup() {
   // Thiet lap cac chan dau ra cho dong co
+  // Thiet lap cac chan dau ra cho dong co
   pinMode(ENA, OUTPUT); pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT);
   pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT); pinMode(ENB, OUTPUT);
 
   // Thiet lap cac chan cho sieu am
+  // Thiet lap cac chan cho sieu am
   pinMode(TRIG, OUTPUT); pinMode(ECHO, INPUT);
 
+  // Thiet lap cac chan cho do line
   // Thiet lap cac chan cho do line
   pinMode(SENSOR_LO, INPUT); pinMode(SENSOR_LI, INPUT);
   pinMode(SENSOR_RI, INPUT); pinMode(SENSOR_RO, INPUT);
@@ -54,6 +60,7 @@ void setup() {
   SerialBT.begin("RobotCar_ESP32_Unified");
   Serial.begin(115200);
 
+  // Dung xe luc moi bat dau
   stopCar();
 }
 
@@ -64,6 +71,7 @@ void loop() {
     handleCommand(cmd);
   }
 
+  // Thuc hien hanh dong theo che do hien tai
   // Thuc hien hanh dong theo che do hien tai
   if (current_mode == 'A') {
     autoDrive();
@@ -86,9 +94,11 @@ void handleCommand(char cmd) {
 }
 
 // Ham tu dong: Ket hop do line va tranh vat can
+// Ham tu dong: Ket hop do line va tranh vat can
 void autoDrive() {
   long distance = checkDistance();
 
+  // Neu co vat can gan (duoi 25cm)
   // Neu co vat can gan (duoi 25cm)
   if (distance > 0 && distance < 25) {
     stopCar();
@@ -98,10 +108,12 @@ void autoDrive() {
     turnRight();
     delay(400);
   } else {
+    // Neu khong co vat can thi do line
     lineFollowing();
   }
 }
 
+// Ham do khoang cach bang cam bien sieu am
 long checkDistance() {
   digitalWrite(TRIG, LOW);
   delayMicroseconds(2);
@@ -113,12 +125,14 @@ long checkDistance() {
   return duration * 0.034 / 2;
 }
 
+// Ham do line
 void lineFollowing() {
   int lo = digitalRead(SENSOR_LO);
   int li = digitalRead(SENSOR_LI);
   int ri = digitalRead(SENSOR_RI);
   int ro = digitalRead(SENSOR_RO);
 
+  // Logic do line co ban (1 la gap vach den, 0 la nen trang)
   if (li == HIGH && ri == HIGH) {
     moveForward();
   } else if (li == LOW && ri == HIGH) {
@@ -130,10 +144,13 @@ void lineFollowing() {
   } else if (ro == HIGH) {
     turnRight();
   } else {
+    // Di cham neu mat line
+    analogWrite(ENA, 100); analogWrite(ENB, 100);
     analogWrite(ENA, speed / 2); analogWrite(ENB, speed / 2);
   }
 }
 
+// Ham dieu khien dong co
 void moveForward() {
   digitalWrite(IN1, HIGH); digitalWrite(IN2, LOW);
   digitalWrite(IN3, HIGH); digitalWrite(IN4, LOW);
