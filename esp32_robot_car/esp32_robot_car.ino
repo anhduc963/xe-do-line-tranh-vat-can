@@ -72,8 +72,6 @@ void loop() {
 }
 
 void handleCommand(char cmd) {
-  // F: Tien, B: Lui, L: Trai, R: Phai, S: Dung
-  // M: Che do thu cong, A: Che do tu dong
   if (cmd == 'M' || cmd == 'A') {
     current_mode = cmd;
     stopCar();
