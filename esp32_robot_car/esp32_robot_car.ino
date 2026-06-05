@@ -10,7 +10,6 @@
 #define ENB 14
 
 // Dinh nghia cac chan cho cam bien sieu am HC-SR04
-// Dinh nghia cac chan cho cam bien sieu am HC-SR04
 #define TRIG 12
 #define ECHO 13
 
@@ -25,8 +24,6 @@
 
 // Bien trang thai
 // M: Manual (Thu cong), A: Auto (Tu dong - Do line + Vat can)
-// Bien trang thai
-// M: Manual (Thu cong), A: Auto (Tu dong - Do line + Vat can)
 char current_mode = 'M';
 int speed = 200; // ESP32 PWM co do phan giai khac, mac dinh thuong la 0-255
 Servo myServo;
@@ -34,15 +31,12 @@ BluetoothSerial SerialBT;
 
 void setup() {
   // Thiet lap cac chan dau ra cho dong co
-  // Thiet lap cac chan dau ra cho dong co
   pinMode(ENA, OUTPUT); pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT);
   pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT); pinMode(ENB, OUTPUT);
 
   // Thiet lap cac chan cho sieu am
-  // Thiet lap cac chan cho sieu am
   pinMode(TRIG, OUTPUT); pinMode(ECHO, INPUT);
 
-  // Thiet lap cac chan cho do line
   // Thiet lap cac chan cho do line
   pinMode(SENSOR_LO, INPUT); pinMode(SENSOR_LI, INPUT);
   pinMode(SENSOR_RI, INPUT); pinMode(SENSOR_RO, INPUT);
@@ -72,7 +66,6 @@ void loop() {
   }
 
   // Thuc hien hanh dong theo che do hien tai
-  // Thuc hien hanh dong theo che do hien tai
   if (current_mode == 'A') {
     autoDrive();
   }
@@ -94,11 +87,9 @@ void handleCommand(char cmd) {
 }
 
 // Ham tu dong: Ket hop do line va tranh vat can
-// Ham tu dong: Ket hop do line va tranh vat can
 void autoDrive() {
   long distance = checkDistance();
 
-  // Neu co vat can gan (duoi 25cm)
   // Neu co vat can gan (duoi 25cm)
   if (distance > 0 && distance < 25) {
     stopCar();
