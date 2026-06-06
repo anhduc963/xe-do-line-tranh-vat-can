@@ -1,31 +1,34 @@
 #include "BluetoothSerial.h"
 #include <ESP32Servo.h> // Can cai thu vien ESP32Servo
 
-// Dinh nghia cac chan cho L298N tren ESP32
+// Dinh nghia cac chan cho L298N tren ESP32 (Cap nhat theo yeu cau cua ban)
 #define ENA 32
-#define IN1 33
-#define IN2 25
-#define IN3 26
-#define IN4 27
+#define IN1 19
+#define IN2 21
+#define IN3 22
+#define IN4 23
 #define ENB 14
 
 // Dinh nghia cac chan cho cam bien sieu am HC-SR04
-#define TRIG 12
-#define ECHO 13
+#define TRIG 5
+#define ECHO 18
 
 // Dinh nghia chan cho Servo SG90
 #define SERVO_PIN 15
 
-// Dinh nghia cac chan cho cam bien do line TCRT5000 (Dung cac chan Input Only)
-#define SENSOR_LO 34
-#define SENSOR_LI 35
-#define SENSOR_RI 36
-#define SENSOR_RO 39
+// Dinh nghia cac chan cho cam bien do line TCRT5000
+#define SENSOR_LO 27
+#define SENSOR_LI 26
+#define SENSOR_RI 25
+#define SENSOR_RO 33
+
+// Tra loi: Co the dieu khien toc do KHONG can encoder bang cach dung PWM (analogWrite)
+// vao chan ENA va ENB. Encoder chi can khi muon do toc do thuc te hoac chay theo quang duong.
 
 // Bien trang thai
 // M: Manual (Thu cong), A: Auto (Tu dong - Do line + Vat can)
 char current_mode = 'M';
-int speed = 200; // ESP32 PWM co do phan giai khac, mac dinh thuong la 0-255
+int speed = 200; // Gia tri tu 0 den 255
 Servo myServo;
 BluetoothSerial SerialBT;
 
@@ -41,7 +44,7 @@ void setup() {
   pinMode(SENSOR_LO, INPUT); pinMode(SENSOR_LI, INPUT);
   pinMode(SENSOR_RI, INPUT); pinMode(SENSOR_RO, INPUT);
 
-  // Thiet lap servo (Dung thu vien ESP32Servo)
+  // Thiet lap servo
   ESP32PWM::allocateTimer(0);
   ESP32PWM::allocateTimer(1);
   ESP32PWM::allocateTimer(2);
@@ -58,13 +61,11 @@ void setup() {
 }
 
 void loop() {
-  // Kiem tra lenh tu Bluetooth
   if (SerialBT.available()) {
     char cmd = SerialBT.read();
     handleCommand(cmd);
   }
 
-  // Thuc hien hanh dong theo che do hien tai
   if (current_mode == 'A') {
     autoDrive();
   }
@@ -83,11 +84,9 @@ void handleCommand(char cmd) {
   }
 }
 
-// Ham tu dong: Ket hop do line va tranh vat can
 void autoDrive() {
   long distance = checkDistance();
 
-  // Neu co vat can gan (duoi 25cm)
   if (distance > 0 && distance < 25) {
     stopCar();
     delay(200);

@@ -10,17 +10,17 @@ Hệ thống điều khiển xe tự hành tích hợp các tính năng dò line
 - **HC-SR04**: Cảm biến siêu âm đo khoảng cách.
 - **TCRT5000**: 4 mắt cảm biến hồng ngoại dò line.
 - **SG90**: Động cơ servo xoay cảm biến.
-- **Encoder (Tùy chọn)**: Để đo tốc độ và quãng đường chính xác hơn.
+- **Encoder (Tùy chọn)**: Để đo tốc độ và quãng đường chính xác hơn. *Lưu ý: Bạn có thể điều khiển tốc độ xe bằng PWM (ENA/ENB) mà không cần encoder.*
 - **Pin 18650 (2 viên)** & **Mạch hạ áp LM2596**: Cung cấp nguồn ổn định 5V cho ESP32 và 7.4V cho động cơ.
 
-### Sơ đồ đấu nối GPIO:
+### Sơ đồ đấu nối GPIO (Đã cập nhật):
 1.  **Mạch điều khiển động cơ (L298N)**:
-    - ENA: 32, IN1: 33, IN2: 25, IN3: 26, IN4: 27, ENB: 14
+    - ENA: 32, IN1: 19, IN2: 21, IN3: 22, IN4: 23, ENB: 14
     - *Lưu ý*: Cần tháo 2 cái jumper (chốt nối) trên chân ENA và ENB của module L298N để kết nối với ESP32. Việc này giúp điều khiển tốc độ xe qua PWM.
 2.  **Cảm biến siêu âm**:
-    - Trig: 12, Echo: 13
+    - Trig: 5, Echo: 18
 3.  **Cảm biến dò line**:
-    - LO: 34, LI: 35, RI: 36, RO: 39
+    - LO: 27, LI: 26, RI: 25, RO: 33
 4.  **Servo**: 15
 
 ## 2. Cài đặt và Nạp chương trình
@@ -47,7 +47,7 @@ Hệ thống điều khiển xe tự hành tích hợp các tính năng dò line
     - **Tự Động**: Xe tự động thực hiện dò line và tránh vật cản nếu phát hiện phía trước có vật cản dưới 25cm.
 
 ## 4. Nâng cấp thêm (Encoder)
-Nếu bạn lắp thêm Encoder, hãy nối chân tín hiệu vào các chân GPIO có hỗ trợ ngắt (Interrupt) như GPIO 18, 19. Việc này giúp xe chạy thẳng hơn thông qua thuật toán PID.
+Nếu bạn lắp thêm Encoder, hãy nối chân tín hiệu vào các chân GPIO còn trống như GPIO 4, 16. Việc này giúp xe chạy thẳng hơn thông qua thuật toán PID.
 
 ---
 *Lưu ý: Luôn đảm bảo nguồn pin cung cấp đủ dòng điện cho cả động cơ và mạch ESP32 để hệ thống hoạt động ổn định nhất.*
