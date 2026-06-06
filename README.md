@@ -16,6 +16,7 @@ Hệ thống điều khiển xe tự hành tích hợp các tính năng dò line
 ### Sơ đồ đấu nối GPIO:
 1.  **Mạch điều khiển động cơ (L298N)**:
     - ENA: 32, IN1: 33, IN2: 25, IN3: 26, IN4: 27, ENB: 14
+    - *Lưu ý*: Cần tháo 2 cái jumper (chốt nối) trên chân ENA và ENB của module L298N để kết nối với ESP32. Việc này giúp điều khiển tốc độ xe qua PWM.
 2.  **Cảm biến siêu âm**:
     - Trig: 12, Echo: 13
 3.  **Cảm biến dò line**:
