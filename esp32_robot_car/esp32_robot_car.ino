@@ -22,9 +22,6 @@
 #define SENSOR_RI 25
 #define SENSOR_RO 33
 
-// Tra loi: Co the dieu khien toc do KHONG can encoder bang cach dung PWM (analogWrite)
-// vao chan ENA va ENB. Encoder chi can khi muon do toc do thuc te hoac chay theo quang duong.
-
 // Bien trang thai
 // M: Manual (Thu cong), A: Auto (Tu dong - Do line + Vat can)
 char current_mode = 'M';
