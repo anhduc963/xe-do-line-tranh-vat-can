@@ -2,25 +2,25 @@
 #include <ESP32Servo.h> // Can cai thu vien ESP32Servo
 
 // Dinh nghia cac chan cho L298N tren ESP32
-#define ENA 32
-#define IN1 33
-#define IN2 25
-#define IN3 26
-#define IN4 27
-#define ENB 14
+#define ENA 14
+#define IN1 19
+#define IN2 21
+#define IN3 22
+#define IN4 23
+#define ENB 12
 
 // Dinh nghia cac chan cho cam bien sieu am HC-SR04
-#define TRIG 12
-#define ECHO 13
+#define TRIG 5
+#define ECHO 18
 
 // Dinh nghia chan cho Servo SG90
 #define SERVO_PIN 15
 
 // Dinh nghia cac chan cho cam bien do line TCRT5000 (Dung cac chan Input Only)
-#define SENSOR_LO 34
-#define SENSOR_LI 35
-#define SENSOR_RI 36
-#define SENSOR_RO 39
+#define SENSOR_LO 27
+#define SENSOR_LI 26
+#define SENSOR_RI 25
+#define SENSOR_RO 33
 
 // Bien trang thai
 // M: Manual (Thu cong), A: Auto (Tu dong - Do line + Vat can)
@@ -135,7 +135,6 @@ void lineFollowing() {
   } else {
     // Di cham neu mat line
     analogWrite(ENA, 100); analogWrite(ENB, 100);
-    analogWrite(ENA, speed / 2); analogWrite(ENB, speed / 2);
   }
 }
 
