@@ -1,67 +1,72 @@
-#ifndef MAINWINDOW_H
+#ifndef MAINWINDOW_H // Lenh chong 'dinh nghia chong cheo' (neu file duoc include nhieu noi)
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-// Thu vien ho tro tim kiem cac thiet bi Bluetooth xung quanh
-#include <QtBluetooth/QBluetoothDeviceDiscoveryAgent>
-// Thu vien ho tro ket noi va giao tiep du lieu qua Bluetooth (giong nhu Serial)
-#include <QtBluetooth/QBluetoothSocket>
-
-QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
-QT_END_NAMESPACE
+#include <QMainWindow> // Cua so chinh cua Qt
+#include <QtBluetooth/QBluetoothDeviceDiscoveryAgent> // Thu vien quet Bluetooth
+#include <QtBluetooth/QBluetoothSocket> // Thu vien truyen nhan du lieu Bluetooth
 
 /**
- * Lop MainWindow: Ke thua tu QMainWindow de tao ra cua so dieu khien robot.
- * Lop nay quan ly tat ca cac logic tu tim thiet bi, ket noi den gui lenh.
+ * GIAI THICH VE LOP (CLASS) VA KE THUA:
+ * 1. class MainWindow : public QMainWindow
+ *    - 'class': Tu khoa de khai bao mot Lop (Ban thiet ke).
+ *    - ':': Dau hai cham nay bieu thi su 'Ke thua'.
+ *    - 'MainWindow' se thua huong tat ca tinh nang cua 'QMainWindow' (nhu thanh tieu de, menu, v.v.)
+ *      va chung ta chi viec viet them cac tinh nang rieng cho robot.
+ *
+ * 2. Q_OBJECT: Day la mot Macro dac biet cua Qt.
+ *    No giup C++ (von la ngon ngu cu) hieu duoc cac tinh nang hien dai cua Qt nhu Signal va Slot.
  */
+
+QT_BEGIN_NAMESPACE
+namespace Ui { class MainWindow; } // 'namespace' giup phan biet ten Lop giua code cua minh va code tu dong cua UI
+QT_END_NAMESPACE
+
 class MainWindow : public QMainWindow
 {
-    Q_OBJECT // Macro bat buoc cua Qt de su dung co che Signal va Slot (tin hieu va ham xu ly)
+    Q_OBJECT
 
 public:
-    // Ham khoi tao cua so
-    MainWindow(QWidget *parent = nullptr);
-    // Ham huy de giai phong bo nho
+    /**
+     * public: Cac ham o day co the duoc goi tu bat cu dau ben ngoai Lop.
+     * explicit MainWindow(QWidget *parent = nullptr):
+     * Day la 'Ham khoi tao' (Constructor). No chay ngay khi doi tuong MainWindow duoc tao ra.
+     * '*' (Dau sao): Ky hieu cua 'Con tro' (Pointer). No luu dia chi vung nho cua doi tuong.
+     */
+    explicit MainWindow(QWidget *parent = nullptr);
+
+    // Ham huy (Destructor): Chay khi cua so bi dong de xoa rac trong bo nho.
     ~MainWindow();
 
 private slots:
-    // Ham duoc goi khi tim thay mot thiet bi Bluetooth moi trong qua trinh quet
+    /**
+     * slots: Day la cac 'O cam'. Khi co mot 'Tin hieu' (Signal) - nhu bam nut - truyen den,
+     * thi ham ben trong Slot se duoc kich hoat de xu ly.
+     */
     void deviceDiscovered(const QBluetoothDeviceInfo &device);
-
-    // Cac ham xu ly khi nguoi dung nhan nut tren giao dien (Buttons)
-    void on_btnScan_clicked();       // Nut "Quet Thiet Bi"
-    void on_btnConnect_clicked();    // Nut "Ket Noi"
-    void on_btnDisconnect_clicked(); // Nut "Ngat Ket Noi"
-
-    // Cac ham gui lenh di chuyen khi nhan vao cac nut mui ten
-    void on_btnForward_clicked();    // Tien
-    void on_btnBackward_clicked();   // Lui
-    void on_btnLeft_clicked();      // Re Trai
-    void on_btnRight_clicked();     // Re Phai
-    void on_btnStop_clicked();      // Dung xe
-
-    // Cac ham chuyen doi che do hoat dong cua robot
-    void on_btnManualMode_clicked(); // Che do Thu cong
-    void on_btnAutoMode_clicked();   // Che do Tu dong
-
-    // Cac ham lang nghe trang thai cua ket noi Bluetooth
-    void socketConnected();          // Khi da ket noi thanh cong
-    void socketDisconnected();       // Khi bi mat ket noi
-    void socketError(QBluetoothSocket::SocketError error); // Khi co loi xay ra
+    void on_btnScan_clicked();
+    void on_btnConnect_clicked();
+    void on_btnDisconnect_clicked();
+    void on_btnForward_clicked();
+    void on_btnBackward_clicked();
+    void on_btnLeft_clicked();
+    void on_btnRight_clicked();
+    void on_btnStop_clicked();
+    void on_btnManualMode_clicked();
+    void on_btnAutoMode_clicked();
+    void socketConnected();
+    void socketDisconnected();
+    void socketError(QBluetoothSocket::SocketError error);
 
 private:
-    // Con tro quan ly giao dien nguoi dung (duoc tao tu file .ui)
-    Ui::MainWindow *ui;
+    /**
+     * private: Cac bien va ham o day chi co the duoc dung ben trong noi bo Lop MainWindow.
+     * Ben ngoai khong the 'nhin thay' hoac thay doi chung truc tiep.
+     */
+    Ui::MainWindow *ui; // Con tro den giao dien (duoc thiet ke trong file .ui)
+    QBluetoothDeviceDiscoveryAgent *discoveryAgent; // Con tro den bo quet Bluetooth
+    QBluetoothSocket *socket; // Con tro den bo truyen nhan du lieu
 
-    // Doi tuong dung de quet tim thiet bi Bluetooth
-    QBluetoothDeviceDiscoveryAgent *discoveryAgent;
-
-    // Doi tuong dung de duy tri ket noi va truyen nhan du lieu voi ESP32
-    QBluetoothSocket *socket;
-
-    // Ham phu tro dung de gui mot ky tu (lenh) duy nhat qua Bluetooth
-    void sendCommand(char cmd);
+    void sendCommand(char cmd); // Ham gui lenh noi bo
 };
 
 #endif // MAINWINDOW_H

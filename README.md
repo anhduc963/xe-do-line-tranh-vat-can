@@ -17,25 +17,35 @@ Hệ thống điều khiển xe tự hành tích hợp các tính năng dò line
 2.  **Cảm biến dò line**:
     - LO: 32, LI: 26, RI: 25, RO: 33
 
-*(Lưu ý: Các linh kiện như Cảm biến siêu âm và Servo hiện đang được tạm thời vô hiệu hóa trong mã nguồn để tập trung vào logic động cơ).*
+## 2. Giải thích các khái niệm C++ & Qt cơ bản (Dành cho người mới)
 
-## 2. Cài đặt và Nạp chương trình
+Trong mã nguồn Qt, bạn sẽ gặp các ký hiệu đặc biệt, dưới đây là ý nghĩa của chúng:
+
+*   **`class` (Lớp)**: Giống như một bản thiết kế (ví dụ: bản thiết kế xe).
+*   **`object` (Đối tượng)**: Là sản phẩm thực tế được tạo ra từ bản thiết kế (ví dụ: chiếc xe thật).
+*   **`::` (Toán tử phạm vi)**: Dùng để chỉ ra một hàm thuộc về lớp nào (ví dụ: `MainWindow::hamA` nghĩa là hàm A nằm trong lớp MainWindow).
+*   **`this`**: Là con trỏ trỏ đến chính đối tượng hiện tại đang chạy code.
+*   **`->` (Mũi tên)**: Dùng để truy cập vào các tính năng của một đối tượng khi ta đang dùng "Con trỏ".
+*   **`*` (Dấu sao)**: Ký hiệu của "Con trỏ" (Pointer) - dùng để lưu địa chỉ của một vùng nhớ.
+*   **`connect(...)`**: Cơ chế đặc biệt của Qt để kết nối sự kiện (như bấm nút) với hành động (như gửi lệnh).
+*   **`public / private`**: Quy định quyền truy cập. `public` là ai cũng dùng được, `private` là chỉ nội bộ lớp đó dùng.
+
+## 3. Cài đặt và Nạp chương trình
 
 1.  **Nạp chương trình**:
     - Mở file `esp32_robot_car/esp32_robot_car.ino`.
     - Chọn Board: **ESP32 Dev Module**.
     - Nhấn nạp code (Upload).
 
-## 3. Giao diện điều khiển (Qt)
+## 4. Giao diện điều khiển (Qt)
 
-Mã nguồn Qt đã được chú thích CHI TIẾT từng dòng để bạn dễ dàng tìm hiểu.
-Bạn có thể mở dự án bằng Qt Creator qua file `qt_interface/RobotControl.pro` hoặc `qt_interface/CMakeLists.txt`.
+Mã nguồn Qt đã được chú thích **CỰC KỲ CHI TIẾT** từng dòng. Bạn có thể mở dự án bằng Qt Creator qua file `qt_interface/RobotControl.pro` hoặc `qt_interface/CMakeLists.txt`.
 
 ### Cách điều khiển:
 1.  **Kết nối**: Quét và kết nối tới thiết bị **"RobotCar_ESP32_Unified"**.
 2.  **Chế độ**:
-    - **Thủ Công**: Sử dụng các phím mui tên.
-    - **Tự Động**: Xe thực hiện dò line với logic động cơ đã được tối ưu (speeda=140, speedb=125).
+    - **Thủ Công**: Sử dụng các phím mũi tên.
+    - **Tự Động**: Xe thực hiện dò line với tốc độ `speeda=140` và `speedb=125`.
 
 ---
 *Lưu ý: Luôn đảm bảo nguồn pin cung cấp đủ dòng điện cho cả động cơ và mạch ESP32 để hệ thống hoạt động ổn định nhất.*
