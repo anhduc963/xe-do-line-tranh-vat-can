@@ -1,23 +1,23 @@
 #include "BluetoothSerial.h"
 #include <ESP32Servo.h> // Can cai thu vien ESP32Servo
 
-// Dinh nghia cac chan cho L298N tren ESP32
-#define ENA 32
-#define IN1 19
-#define IN2 21
-#define IN3 22
-#define IN4 23
+// Dinh nghia cac chan cho L298N tren ESP32 (Giu nguyen theo yeu cau cua ban)
+#define ENA 13
+#define IN1 16
+#define IN2 17
+#define IN3 18
+#define IN4 19
 #define ENB 14
 
 // Dinh nghia cac chan cho cam bien sieu am HC-SR04
-#define TRIG 5
-#define ECHO 18
+#define TRIG 23
+#define ECHO 22
 
 // Dinh nghia chan cho Servo SG90
-#define SERVO_PIN 15
+#define SERVO_PIN 27
 
 // Dinh nghia cac chan cho cam bien do line TCRT5000
-#define SENSOR_LO 27
+#define SENSOR_LO 32
 #define SENSOR_LI 26
 #define SENSOR_RI 25
 #define SENSOR_RO 33
@@ -42,7 +42,6 @@ void setup() {
   myServo.setPeriodHertz(50);
   myServo.attach(SERVO_PIN, 500, 2400);
 
-  // Dat servo o vi tri chinh giua (90 do)
   myServo.write(90);
 
   SerialBT.begin("RobotCar_ESP32_Unified");
@@ -66,7 +65,7 @@ void handleCommand(char cmd) {
   if (cmd == 'M' || cmd == 'A') {
     current_mode = cmd;
     stopCar();
-    myServo.write(90); // Reset servo ve giua khi chuyen che do
+    myServo.write(90);
   } else if (current_mode == 'M') {
     if (cmd == 'F') moveForward();
     else if (cmd == 'B') moveBackward();
@@ -83,7 +82,6 @@ void autoDrive() {
     stopCar();
     delay(200);
 
-    // Quet cam bien trong khoang 120 do (tu 30 den 150)
     myServo.write(30);
     delay(400);
     long distRight = checkDistance();
@@ -92,7 +90,7 @@ void autoDrive() {
     delay(600);
     long distLeft = checkDistance();
 
-    myServo.write(90); // Ve lai giua
+    myServo.write(90);
     delay(400);
 
     if (distRight > distLeft) {
