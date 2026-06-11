@@ -1,47 +1,47 @@
 #include "BluetoothSerial.h"
-#include <ESP32Servo.h> // Can cai thu vien ESP32Servo
+#include <ESP32Servo.h> // Da khoi phuc thu vien Servo
 
 // Dinh nghia cac chan cho L298N tren ESP32
-#define ENA 14
-#define IN1 19
-#define IN2 21
-#define IN3 22
-#define IN4 23
-#define ENB 12
+#define ENA 13
+#define IN1 16
+#define IN2 17
+#define IN3 18
+#define IN4 19
+#define ENB 14
 
-// Dinh nghia cac chan cho cam bien sieu am HC-SR04
-#define TRIG 5
-#define ECHO 18
+// Dinh nghia cac chan cho cam bien sieu am HC-SR04 (Da khoi phuc)
+#define TRIG 23
+#define ECHO 22
 
-// Dinh nghia chan cho Servo SG90
-#define SERVO_PIN 15
+// Dinh nghia chan cho Servo SG90 (Da khoi phuc)
+#define SERVO_PIN 27
 
-// Dinh nghia cac chan cho cam bien do line TCRT5000 (Dung cac chan Input Only)
-#define SENSOR_LO 27
+// Dinh nghia cac chan cho cam bien do line TCRT5000
+#define SENSOR_LO 32
 #define SENSOR_LI 26
 #define SENSOR_RI 25
 #define SENSOR_RO 33
 
 // Bien trang thai
-// M: Manual (Thu cong), A: Auto (Tu dong - Do line + Vat can)
 char current_mode = 'M';
-int speed = 200; // ESP32 PWM co do phan giai khac, mac dinh thuong la 0-255
-Servo myServo;
+
+// Thiet lap toc do rieng cho tung ben dong co
+float speeda = 140;
+float speedb = 125;
+
+Servo myServo; // Da khoi phuc doi tuong Servo
 BluetoothSerial SerialBT;
 
 void setup() {
-  // Thiet lap cac chan dau ra cho dong co
   pinMode(ENA, OUTPUT); pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT);
   pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT); pinMode(ENB, OUTPUT);
 
-  // Thiet lap cac chan cho sieu am
-  pinMode(TRIG, OUTPUT); pinMode(ECHO, INPUT);
+  pinMode(TRIG, OUTPUT); pinMode(ECHO, INPUT); // Da khoi phuc pins sieu am
 
-  // Thiet lap cac chan cho do line
   pinMode(SENSOR_LO, INPUT); pinMode(SENSOR_LI, INPUT);
   pinMode(SENSOR_RI, INPUT); pinMode(SENSOR_RO, INPUT);
 
-  // Thiet lap servo (Dung thu vien ESP32Servo)
+  // Da khoi phuc khoi tao Servo
   ESP32PWM::allocateTimer(0);
   ESP32PWM::allocateTimer(1);
   ESP32PWM::allocateTimer(2);
@@ -50,7 +50,6 @@ void setup() {
   myServo.attach(SERVO_PIN, 500, 2400);
   myServo.write(90);
 
-  // Thiet lap Bluetooth
   SerialBT.begin("RobotCar_ESP32_Unified");
   Serial.begin(115200);
 
@@ -59,13 +58,11 @@ void setup() {
 }
 
 void loop() {
-  // Kiem tra lenh tu Bluetooth
   if (SerialBT.available()) {
     char cmd = SerialBT.read();
     handleCommand(cmd);
   }
 
-  // Thuc hien hanh dong theo che do hien tai
   if (current_mode == 'A') {
     autoDrive();
   }
@@ -75,6 +72,7 @@ void handleCommand(char cmd) {
   if (cmd == 'M' || cmd == 'A') {
     current_mode = cmd;
     stopCar();
+    myServo.write(90);
   } else if (current_mode == 'M') {
     if (cmd == 'F') moveForward();
     else if (cmd == 'B') moveBackward();
@@ -84,18 +82,63 @@ void handleCommand(char cmd) {
   }
 }
 
-// Ham tu dong: Ket hop do line va tranh vat can
+void turnLeft() {
+  digitalWrite(IN1, HIGH); digitalWrite(IN2, LOW);
+  digitalWrite(IN3, HIGH); digitalWrite(IN4, LOW);
+  analogWrite(ENA, speeda); analogWrite(ENB, speedb);
+}
+
+void turnRight() {
+  digitalWrite(IN1, LOW); digitalWrite(IN2, HIGH);
+  digitalWrite(IN3, LOW); digitalWrite(IN4, HIGH);
+  analogWrite(ENA, speeda); analogWrite(ENB, speedb);
+}
+
+void moveForward() {
+  digitalWrite(IN1, LOW); digitalWrite(IN2, HIGH);
+  digitalWrite(IN3, HIGH); digitalWrite(IN4, LOW);
+  analogWrite(ENA, speeda); analogWrite(ENB, speedb);
+}
+
+void moveBackward() {
+  digitalWrite(IN1, HIGH); digitalWrite(IN2, LOW);
+  digitalWrite(IN3, LOW); digitalWrite(IN4, HIGH);
+  analogWrite(ENA, speeda); analogWrite(ENB, speedb);
+}
+
+void stopCar() {
+  digitalWrite(IN1, LOW); digitalWrite(IN2, LOW);
+  digitalWrite(IN3, LOW); digitalWrite(IN4, LOW);
+  analogWrite(ENA, 0); analogWrite(ENB, 0);
+}
+
 void autoDrive() {
+  // Khoi phuc logic tranh vat can
   long distance = checkDistance();
 
-  // Neu co vat can gan (duoi 25cm)
   if (distance > 0 && distance < 25) {
     stopCar();
     delay(200);
-    moveBackward();
-    delay(300);
-    turnRight();
+
+    // Quet cam bien 120 do
+    myServo.write(30);
     delay(400);
+    long distRight = checkDistance();
+
+    myServo.write(150);
+    delay(600);
+    long distLeft = checkDistance();
+
+    myServo.write(90);
+    delay(400);
+
+    if (distRight > distLeft) {
+      turnRight();
+      delay(400);
+    } else {
+      turnLeft();
+      delay(400);
+    }
   } else {
     // Neu khong co vat can thi do line
     lineFollowing();
