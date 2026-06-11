@@ -90,7 +90,12 @@ void MainWindow::on_btnConnect_clicked()
     // split(" "): Chia chuoi ky tu ra lam nhieu phan dua tren dau cach
     QString address = selected.split(" ").at(0);
 
-    socket->connectToService(QBluetoothAddress(address), QBluetoothUuid(QBluetoothUuid::Rfcomm));
+    /**
+     * KET NOI DEN DICH VU:
+     * Chung ta su dung UUID SerialPort (SPP) de ket noi voi ESP32.
+     * QBluetoothUuid::ServiceClassUuid::SerialPort la ma dinh danh tieu chuan cho giao tiep Serial qua Bluetooth.
+     */
+    socket->connectToService(QBluetoothAddress(address), QBluetoothUuid::ServiceClassUuid::SerialPort);
     ui->statusBar->showMessage("Dang ket noi toi " + address + "...");
 }
 
@@ -111,8 +116,12 @@ void MainWindow::socketDisconnected()
 
 void MainWindow::socketError(QBluetoothSocket::SocketError error)
 {
-    // QString::number(): Chuyen doi kieu so sang kieu chu de hien thi
-    ui->statusBar->showMessage("Loi Bluetooth: " + QString::number(error));
+    /**
+     * EP KIEU (CASTING):
+     * 'error' la mot kieu Enum (danh sach cac ma loi).
+     * QString::number() can mot so nguyen (int), nen ta dung (int) de chuyen doi.
+     */
+    ui->statusBar->showMessage("Loi Bluetooth: " + QString::number((int)error));
 }
 
 void MainWindow::sendCommand(char cmd)

@@ -1,6 +1,3 @@
-#include "BluetoothSerial.h"
-#include <ESP32Servo.h> // Da khoi phuc thu vien Servo
-
 // ---------------------------------------------------------------------------
 // GIAI THICH VE THU VIEN (#include):
 // - BluetoothSerial: Dung de bien ESP32 thanh mot thiet bi Bluetooth,
