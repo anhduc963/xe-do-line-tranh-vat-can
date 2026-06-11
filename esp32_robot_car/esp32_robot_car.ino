@@ -1,7 +1,7 @@
 #include "BluetoothSerial.h"
 #include <ESP32Servo.h> // Can cai thu vien ESP32Servo
 
-// Dinh nghia cac chan cho L298N tren ESP32 (Cap nhat theo yeu cau cua ban)
+// Dinh nghia cac chan cho L298N tren ESP32
 #define ENA 32
 #define IN1 19
 #define IN2 21
@@ -23,34 +23,28 @@
 #define SENSOR_RO 33
 
 // Bien trang thai
-// M: Manual (Thu cong), A: Auto (Tu dong - Do line + Vat can)
 char current_mode = 'M';
-int speed = 200; // Gia tri tu 0 den 255
+int speed = 200;
 Servo myServo;
 BluetoothSerial SerialBT;
 
 void setup() {
-  // Thiet lap cac chan dau ra cho dong co
   pinMode(ENA, OUTPUT); pinMode(IN1, OUTPUT); pinMode(IN2, OUTPUT);
   pinMode(IN3, OUTPUT); pinMode(IN4, OUTPUT); pinMode(ENB, OUTPUT);
-
-  // Thiet lap cac chan cho sieu am
   pinMode(TRIG, OUTPUT); pinMode(ECHO, INPUT);
-
-  // Thiet lap cac chan cho do line
   pinMode(SENSOR_LO, INPUT); pinMode(SENSOR_LI, INPUT);
   pinMode(SENSOR_RI, INPUT); pinMode(SENSOR_RO, INPUT);
 
-  // Thiet lap servo
   ESP32PWM::allocateTimer(0);
   ESP32PWM::allocateTimer(1);
   ESP32PWM::allocateTimer(2);
   ESP32PWM::allocateTimer(3);
   myServo.setPeriodHertz(50);
   myServo.attach(SERVO_PIN, 500, 2400);
+
+  // Dat servo o vi tri chinh giua (90 do)
   myServo.write(90);
 
-  // Thiet lap Bluetooth
   SerialBT.begin("RobotCar_ESP32_Unified");
   Serial.begin(115200);
 
@@ -72,6 +66,7 @@ void handleCommand(char cmd) {
   if (cmd == 'M' || cmd == 'A') {
     current_mode = cmd;
     stopCar();
+    myServo.write(90); // Reset servo ve giua khi chuyen che do
   } else if (current_mode == 'M') {
     if (cmd == 'F') moveForward();
     else if (cmd == 'B') moveBackward();
@@ -87,10 +82,26 @@ void autoDrive() {
   if (distance > 0 && distance < 25) {
     stopCar();
     delay(200);
-    moveBackward();
-    delay(300);
-    turnRight();
+
+    // Quet cam bien trong khoang 120 do (tu 30 den 150)
+    myServo.write(30);
     delay(400);
+    long distRight = checkDistance();
+
+    myServo.write(150);
+    delay(600);
+    long distLeft = checkDistance();
+
+    myServo.write(90); // Ve lai giua
+    delay(400);
+
+    if (distRight > distLeft) {
+      turnRight();
+      delay(400);
+    } else {
+      turnLeft();
+      delay(400);
+    }
   } else {
     lineFollowing();
   }

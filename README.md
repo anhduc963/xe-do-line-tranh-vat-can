@@ -9,7 +9,7 @@ Hệ thống điều khiển xe tự hành tích hợp các tính năng dò line
 - **L298N**: Mạch công suất điều khiển động cơ DC.
 - **HC-SR04**: Cảm biến siêu âm đo khoảng cách.
 - **TCRT5000**: 4 mắt cảm biến hồng ngoại dò line.
-- **SG90**: Động cơ servo xoay cảm biến.
+- **SG90**: Động cơ servo xoay cảm biến (Góc xoay giới hạn 120 độ để bảo vệ dây và cảm biến).
 - **Pin 18650 (2 viên)** & **Mạch hạ áp LM2596**: Cung cấp nguồn ổn định 5V cho ESP32 và 7.4V cho động cơ.
 
 ### Sơ đồ đấu nối GPIO:
@@ -33,9 +33,9 @@ Hệ thống điều khiển xe tự hành tích hợp các tính năng dò line
 
 ## 3. Giao diện điều khiển (Qt)
 
-### Chạy ứng dụng:
-1.  Mở `qt_interface/RobotControl.pro` bằng phần mềm Qt Creator.
-2.  Biên dịch và khởi chạy ứng dụng.
+Bạn có thể mở dự án bằng Qt Creator theo hai cách:
+1.  **QMake**: Mở file `qt_interface/RobotControl.pro`.
+2.  **CMake**: Mở file `qt_interface/CMakeLists.txt`.
 
 ### Cách điều khiển:
 1.  **Kết nối**:
@@ -43,7 +43,7 @@ Hệ thống điều khiển xe tự hành tích hợp các tính năng dò line
     - Chọn thiết bị **"RobotCar_ESP32_Unified"** từ danh sách và nhấn **"Kết Nối"**.
 2.  **Chế độ hoạt động**:
     - **Thủ Công**: Sử dụng các nút mũi tên (↑, ↓, ←, →) để lái xe và nút (■) để dừng.
-    - **Tự Động**: Xe tự động thực hiện dò line và tránh vật cản nếu phát hiện phía trước có vật cản dưới 25cm.
+    - **Tự Động**: Xe tự động thực hiện dò line và tránh vật cản. Khi gặp vật cản, servo sẽ xoay 120 độ để tìm hướng đi trống.
 
 ---
 *Lưu ý: Luôn đảm bảo nguồn pin cung cấp đủ dòng điện cho cả động cơ và mạch ESP32 để hệ thống hoạt động ổn định nhất.*
