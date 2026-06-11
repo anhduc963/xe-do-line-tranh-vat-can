@@ -53,6 +53,7 @@ void setup() {
   SerialBT.begin("RobotCar_ESP32_Unified");
   Serial.begin(115200);
 
+  // Dung xe luc moi bat dau
   stopCar();
 }
 
@@ -139,10 +140,12 @@ void autoDrive() {
       delay(400);
     }
   } else {
+    // Neu khong co vat can thi do line
     lineFollowing();
   }
 }
 
+// Ham do khoang cach bang cam bien sieu am
 long checkDistance() {
   digitalWrite(TRIG, LOW);
   delayMicroseconds(2);
@@ -154,12 +157,14 @@ long checkDistance() {
   return duration * 0.034 / 2;
 }
 
+// Ham do line
 void lineFollowing() {
   int lo = digitalRead(SENSOR_LO);
   int li = digitalRead(SENSOR_LI);
   int ri = digitalRead(SENSOR_RI);
   int ro = digitalRead(SENSOR_RO);
 
+  // Logic do line co ban (1 la gap vach den, 0 la nen trang)
   if (li == HIGH && ri == HIGH) {
     moveForward();
   } else if (li == LOW && ri == HIGH) {
@@ -171,6 +176,38 @@ void lineFollowing() {
   } else if (ro == HIGH) {
     turnRight();
   } else {
-    analogWrite(ENA, speeda / 2); analogWrite(ENB, speedb / 2);
+    // Di cham neu mat line
+    analogWrite(ENA, 100); analogWrite(ENB, 100);
   }
+}
+
+// Ham dieu khien dong co
+void moveForward() {
+  digitalWrite(IN1, HIGH); digitalWrite(IN2, LOW);
+  digitalWrite(IN3, HIGH); digitalWrite(IN4, LOW);
+  analogWrite(ENA, speed); analogWrite(ENB, speed);
+}
+
+void moveBackward() {
+  digitalWrite(IN1, LOW); digitalWrite(IN2, HIGH);
+  digitalWrite(IN3, LOW); digitalWrite(IN4, HIGH);
+  analogWrite(ENA, speed); analogWrite(ENB, speed);
+}
+
+void turnLeft() {
+  digitalWrite(IN1, LOW); digitalWrite(IN2, HIGH);
+  digitalWrite(IN3, HIGH); digitalWrite(IN4, LOW);
+  analogWrite(ENA, speed); analogWrite(ENB, speed);
+}
+
+void turnRight() {
+  digitalWrite(IN1, HIGH); digitalWrite(IN2, LOW);
+  digitalWrite(IN3, LOW); digitalWrite(IN4, HIGH);
+  analogWrite(ENA, speed); analogWrite(ENB, speed);
+}
+
+void stopCar() {
+  digitalWrite(IN1, LOW); digitalWrite(IN2, LOW);
+  digitalWrite(IN3, LOW); digitalWrite(IN4, LOW);
+  analogWrite(ENA, 0); analogWrite(ENB, 0);
 }
