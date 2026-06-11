@@ -42,16 +42,9 @@ Trong mã nguồn Qt, bạn sẽ gặp các ký hiệu đặc biệt, dưới đ
     - Chọn Board: **ESP32 Dev Module**.
     - Nhấn nạp code (Upload).
 
-## 4. Giao diện điều khiển (Sử dụng CMake)
+## 4. Giao diện điều khiển (Qt)
 
-Mã nguồn giao diện sử dụng **CMake** làm công cụ biên dịch chính. Các tệp nguồn đều có chú thích **CỰC KỲ CHI TIẾT** từng dòng.
-
-### Cách biên dịch:
-1.  Mở Qt Creator.
-2.  Chọn **Open File or Project**.
-3.  Chọn tệp `qt_interface/CMakeLists.txt`.
-4.  Cấu hình dự án với bộ Kit Qt hiện có của bạn.
-5.  Nhấn nút **Run** (mũi tên xanh) để biên dịch và chạy.
+Mã nguồn Qt đã được chú thích **CỰC KỲ CHI TIẾT** từng dòng. Bạn có thể mở dự án bằng Qt Creator qua file `qt_interface/RobotControl.pro` hoặc `qt_interface/CMakeLists.txt`.
 
 ### Cách điều khiển:
 1.  **Kết nối**: Quét và kết nối tới thiết bị **"RobotCar_ESP32_Unified"**.
