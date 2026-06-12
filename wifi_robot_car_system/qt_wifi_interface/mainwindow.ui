@@ -11,43 +11,57 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Điều Khiển Xe Tự Hành</string>
+   <string>Điều Khiển Xe WiFi (TCP)</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_main">
     <item>
-     <widget class="QGroupBox" name="groupBoxBT">
+     <widget class="QGroupBox" name="groupBoxWiFi">
       <property name="title">
-       <string>Kết Nối Bluetooth</string>
+       <string>Cấu Hình WiFi</string>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_BT">
-       <item>
-        <widget class="QListWidget" name="listDevices"/>
+      <layout class="QGridLayout" name="gridLayout_WiFi">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Địa chỉ IP:</string>
+         </property>
+        </widget>
        </item>
-       <item>
-        <layout class="QVBoxLayout" name="verticalLayout_BT_btns">
-         <item>
-          <widget class="QPushButton" name="btnScan">
-           <property name="text">
-            <string>Quét Thiết Bị</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btnConnect">
-           <property name="text">
-            <string>Kết Nối</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btnDisconnect">
-           <property name="text">
-            <string>Ngắt Kết Nối</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="editIP">
+         <property name="text">
+          <string>192.168.4.1</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Cổng (Port):</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="editPort">
+         <property name="text">
+          <string>8080</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QPushButton" name="btnConnect">
+         <property name="text">
+          <string>Kết Nối</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QPushButton" name="btnDisconnect">
+         <property name="text">
+          <string>Ngắt Kết Nối</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
