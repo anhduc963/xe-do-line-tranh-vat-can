@@ -1,6 +1,6 @@
-# HƯỚNG DẪN ĐIỀU KHIỂN XE TỰ HÀNH (ESP32)
+# HƯỚNG DẪN ĐIỀU KHIỂN XE TỰ HÀNH (ESP32) - PHIÊN BẢN WIFI
 
-Hệ thống điều khiển xe tự hành tích hợp các tính năng dò line, tránh vật cản và điều khiển thủ công thông qua giao diện Bluetooth.
+Hệ thống điều khiển xe tự hành tích hợp các tính năng dò line, tránh vật cản và điều khiển thủ công thông qua giao diện WiFi (giao thức TCP).
 
 ## 1. Thành phần phần cứng và Đấu nối
 
@@ -38,23 +38,24 @@ Trong mã nguồn Qt, bạn sẽ gặp các ký hiệu đặc biệt, dưới đ
 
 1.  **Yêu cầu thư viện**: Cài đặt thư viện **ESP32Servo** trong Arduino IDE.
 2.  **Nạp chương trình**:
-    - Mở file `esp32_robot_car/esp32_robot_car.ino`.
+    - Mở file `wifi_robot_car_system/esp32_wifi_car/esp32_wifi_car.ino`.
     - Chọn Board: **ESP32 Dev Module**.
     - Nhấn nạp code (Upload).
 
 ## 4. Giao diện điều khiển (Sử dụng CMake)
 
-Mã nguồn giao diện sử dụng **CMake** làm công cụ biên dịch chính. Các tệp nguồn đều có chú thích **CỰC KỲ CHI TIẾT** từng dòng.
+Mã nguồn giao diện nằm trong thư mục `wifi_robot_car_system/qt_wifi_interface/`, sử dụng **CMake** và thư viện **Qt Network**.
 
 ### Cách biên dịch:
 1.  Mở Qt Creator.
 2.  Chọn **Open File or Project**.
-3.  Chọn tệp `qt_interface/CMakeLists.txt`.
+3.  Chọn tệp `wifi_robot_car_system/qt_wifi_interface/CMakeLists.txt`.
 4.  Cấu hình dự án với bộ Kit Qt hiện có của bạn.
 5.  Nhấn nút **Run** (mũi tên xanh) để biên dịch và chạy.
 
 ### Cách điều khiển:
-1.  **Kết nối**: Quét và kết nối tới thiết bị **"RobotCar_ESP32_Unified"**.
+1.  **Kết nối WiFi**: Kết nối máy tính vào mạng WiFi do xe phát ra (Tên: **RobotCar_ESP32_WiFi**, không mật khẩu).
+2.  **Giao diện**: Nhập IP `192.168.4.1` và Port `8080` (đã để mặc định) rồi nhấn **Kết Nối**.
 2.  **Chế độ**:
     - **Thủ Công**: Sử dụng các phím mũi tên.
     - **Tự Động**: Xe thực hiện dò line và tránh vật cản (Sử dụng cảm biến siêu âm gắn trên Servo quét 120 độ).
