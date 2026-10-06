@@ -17,7 +17,7 @@ public:
     ~MainWindow();
 
 private slots:
-    // Cac Slot xu ly su kien nut bam
+    // Cac slot xu ly su kien nut bam
     void on_btnConnect_clicked();
     void on_btnDisconnect_clicked();
     void on_btnForward_clicked();
@@ -28,16 +28,16 @@ private slots:
     void on_btnManualMode_clicked();
     void on_btnAutoMode_clicked();
 
-    // Cac Slot xu ly trang thai mang
+    // Cac slot xu ly trang thai mang
     void socketConnected();
     void socketDisconnected();
     void socketError(QAbstractSocket::SocketError error);
 
 private:
     Ui::MainWindow *ui;
-    QTcpSocket *socket; // Dung QTcpSocket thay cho QBluetoothSocket
+    QTcpSocket *socket;
 
     void sendCommand(char cmd);
 };
 
-#endif // MAINWINDOW_H
+#endif
