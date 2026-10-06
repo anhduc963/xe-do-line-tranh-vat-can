@@ -7,19 +7,56 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
+    //chinh sua giao dien
     this->setStyleSheet(
-        "QMainWindow { background-color: #f0f0f0; }"
+        "QMainWindow { background-color: #f0f0f0; color: #333333; }"
+        "QGroupBox { color: #333333; font-weight: bold; border: 1px solid #cccccc; border-radius: 8px;}"
+        "QLabel { color: #333333; }"
+
+        "QLineEdit { "
+        "  background-color: #ffffff; "
+        "  color: #000000; "
+        "  border: 1px solid #cccccc; "
+        "  border-radius: 6px; "
+        "  padding: 4px; "
+        "}"
+
         "QPushButton { "
         "  background-color: #ffffff; "
+        "  color: #333333; "
         "  border: 1px solid #cccccc; "
         "  border-radius: 10px; "
         "  padding: 5px; "
         "  font-weight: bold; "
-        "  min-height: 30px; "
+        "  min-height: 10px; "
         "}"
-        "#btnStop { background-color: #e74c3c; color: white; }"
-    );
+        "QPushButton:hover {"
+        "   background-color: #d5d5d5;"
+        "}"
+        "QPushButton:pressed {"
+        "   background-color: #b0b0b0;"
+        "   border: 1px solid #707070;"
+        "}"
+
+        "#btnForward, #btnBackward, #btnLeft, #btnRight, #btnStop { "
+        "  font-size: 18px; "
+        "  min-width: 40px; "
+        "  min-height: 40px; "
+        "}"
+
+        "#btnStop { "
+        "  background-color: #e74c3c; "
+        "  color: white; "
+        "  border: 1px solid #c0392b; "
+        "}"
+        "#btnStop:hover { "
+        "  background-color: #ff6b5b; "
+        "}"
+        "#btnStop:pressed { "
+        "  background-color: #c0392b; "
+        "  border: 1px solid #962d22; "
+        "}"
+        );
 
     // Khoi tao socket mang
     socket = new QTcpSocket(this);
@@ -41,7 +78,8 @@ void MainWindow::on_btnConnect_clicked()
     int port = ui->editPort->text().toInt();
 
     socket->connectToHost(ip, port);
-    ui->statusBar->showMessage("Dang ket noi toi " + ip + ":" + QString::number(port) + "...");
+    ui->statusBar->setStyleSheet("color: black;");
+    ui->statusBar->showMessage("Dang ket noi...");
 }
 
 void MainWindow::on_btnDisconnect_clicked()
@@ -51,7 +89,7 @@ void MainWindow::on_btnDisconnect_clicked()
 
 void MainWindow::socketConnected()
 {
-    ui->statusBar->showMessage("Da ket noi WiFi (TCP)!");
+    ui->statusBar->showMessage("Da ket noi WiFi!");
 }
 
 void MainWindow::socketDisconnected()
@@ -70,17 +108,17 @@ void MainWindow::sendCommand(char cmd)
         QByteArray data;
         data.append(cmd);
         socket->write(data);
-        socket->flush(); // Dam bao du lieu duoc gui di ngay lap tuc
+        socket->flush();
         qDebug() << "Da gui lenh WiFi:" << cmd;
     } else {
         ui->statusBar->showMessage("Chua ket noi WiFi!");
     }
 }
 
-void MainWindow::on_btnForward_clicked() { sendCommand('F'); }
-void MainWindow::on_btnBackward_clicked() { sendCommand('B'); }
-void MainWindow::on_btnLeft_clicked() { sendCommand('L'); }
-void MainWindow::on_btnRight_clicked() { sendCommand('R'); }
-void MainWindow::on_btnStop_clicked() { sendCommand('S'); }
+void MainWindow::on_btnForward_clicked()    { sendCommand('F'); }
+void MainWindow::on_btnBackward_clicked()   { sendCommand('B'); }
+void MainWindow::on_btnLeft_clicked()       { sendCommand('L'); }
+void MainWindow::on_btnRight_clicked()      { sendCommand('R'); }
+void MainWindow::on_btnStop_clicked()       { sendCommand('S');}
 void MainWindow::on_btnManualMode_clicked() { sendCommand('M'); }
-void MainWindow::on_btnAutoMode_clicked() { sendCommand('A'); }
+void MainWindow::on_btnAutoMode_clicked()   { sendCommand('A'); }
