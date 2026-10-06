@@ -6,12 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>500</width>
-    <height>550</height>
+    <width>478</width>
+    <height>561</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Điều Khiển Xe WiFi (TCP)</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_main">
@@ -21,35 +24,35 @@
        <string>Cấu Hình WiFi</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_WiFi">
-       <item row="0" column="0">
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>Địa chỉ IP:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
+       <item row="0" column="2">
         <widget class="QLineEdit" name="editIP">
          <property name="text">
           <string>192.168.4.1</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
+       <item row="0" column="1">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Địa chỉ IP:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
         <widget class="QLabel" name="label_2">
          <property name="text">
           <string>Cổng (Port):</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
+       <item row="1" column="2">
         <widget class="QLineEdit" name="editPort">
          <property name="text">
           <string>8080</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="0">
+       <item row="2" column="2">
         <widget class="QPushButton" name="btnConnect">
          <property name="text">
           <string>Kết Nối</string>
@@ -72,8 +75,8 @@
        <string>Điều Khiển Thủ Công</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_Control">
-       <item row="0" column="1">
-        <widget class="QPushButton" name="btnForward">
+       <item row="1" column="2">
+        <widget class="QPushButton" name="btnRight">
          <property name="minimumSize">
           <size>
            <width>60</width>
@@ -81,7 +84,7 @@
           </size>
          </property>
          <property name="text">
-          <string>↑</string>
+          <string>→</string>
          </property>
         </widget>
        </item>
@@ -98,6 +101,19 @@
          </property>
         </widget>
        </item>
+       <item row="2" column="1">
+        <widget class="QPushButton" name="btnBackward">
+         <property name="minimumSize">
+          <size>
+           <width>60</width>
+           <height>60</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>↓</string>
+         </property>
+        </widget>
+       </item>
        <item row="1" column="1">
         <widget class="QPushButton" name="btnStop">
          <property name="minimumSize">
@@ -111,8 +127,8 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="2">
-        <widget class="QPushButton" name="btnRight">
+       <item row="0" column="1">
+        <widget class="QPushButton" name="btnForward">
          <property name="minimumSize">
           <size>
            <width>60</width>
@@ -120,20 +136,7 @@
           </size>
          </property>
          <property name="text">
-          <string>→</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QPushButton" name="btnBackward">
-         <property name="minimumSize">
-          <size>
-           <width>60</width>
-           <height>60</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>↓</string>
+          <string>↑</string>
          </property>
         </widget>
        </item>
@@ -170,8 +173,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>500</width>
-     <height>22</height>
+     <width>478</width>
+     <height>25</height>
     </rect>
    </property>
   </widget>
